@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Vue Basics with Marc</title>
+        <script src="https://unpkg.com/vue@next"></script>
+    </head>
+    <body>
+        <div id="app">
+            <!-- <div v-if="counter !== 0">Counter: {{counter}}</div>
+            <div v-else>The counter is ZERO</div>
+            <button @click="decreaseCounter" :disabled="counter === 0">-</button>
+            <button @click="counter += 1">+</button> -->
+            <h1>Shopping List 🛒</h1>
+            <!-- <pre>{{ items }}</pre> -->
+            <form @submit.prevent="addNewItem">
+                <input type="text" v-model.trim="newItemName" />
+                <button type="submit" @click.right.prevent="true">
+                    Add item
+                </button>
+            </form>
+            <h2>Active</h2>
+            <ul>
+                <li v-for="item in activeItems" :key="item.id">
+                    <input type="checkbox" v-model="item.isChecked" />
+                    <span :style="itemStyle(item)">{{item.name}}</span>
+                    <button @click="decreaseCount(item)">-</button>
+                    {{item.count}}
+                    <button @click="increaseCount(item)">+</button>
+                    <button @click="deleteItem(item)">🗑</button>
+                </li>
+            </ul>
+            <h2>Inactive</h2>
+            <ul>
+                <li v-for="item in inactiveItems" :key="item.id">
+                    {{item.name}}
+                    <button @click="increaseCount(item)">⬆️</button>
+                </li>
+            </ul>
+        </div>
+
+        <script>
+            const { createApp } = Vue
+            createApp({
+                data() {
+                    return {
+                        message: 'hello world',
+                        counter: 0,
+                        items: [
+                            {
+                                id: 1,
+                                name: 'Tomato',
+                                count: 1,
+                                isChecked: true,
+                            },
+                            { id: 2, name: 'Milk', count: 1 },
+                            { id: 3, name: 'Eggs', count: 1 },
+                        ],
+                        newItemName: '',
+                    }
+                },
+                methods: {
+                    increaseCount(item) {
+                        item.count += 1
+                    },
+                    decreaseCount(item) {
+                        if (item.count > 0) item.count -= 1
+                    },
+                    addNewItem() {
+                        this.items.push({
+                            id: this.items.length + 1,
+                            name: this.newItemName,
+                            count: 1,
+                        })
+                        this.newItemName = ''
+                    },
+                    deleteItem(deletedItem) {
+                        this.items = this.items.filter(
+                            item => item !== deletedItem,
+                        )
+                    },
+                    itemStyle(item) {
+                        if (item.isChecked) {
+                            return {
+                                color: 'green',
+                                textDecoration: 'line-through',
+                            }
+                        } else {
+                            return {}
+                        }
+                    },
+                },
+                computed: {
+                    amountOfItems() {
+                        return this.items.length
+                    },
+                    activeItems() {
+                        return this.items.filter(item => item.count !== 0)
+                    },
+                    inactiveItems() {
+                        return this.items.filter(item => item.count === 0)
+                    },
+                },
+            }).mount('#app')
+        </script>
+    </body>
+</html>
